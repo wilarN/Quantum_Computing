@@ -36,3 +36,7 @@ print(counts)
 
 
 plot_histogram(counts)
+
+
+result_num = list(counts.keys())[0]
+print(f"Your number is: {int(result_num, 2)}")
