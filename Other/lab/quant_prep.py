@@ -1,4 +1,10 @@
+import math
 
+#* -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+#* source main_prep_env/bin/activate
+#* -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
+#* -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 # Size of the matrix
 number_of_x_rows = 11 # X
 number_of_y_columns = 11 # Y
@@ -8,6 +14,13 @@ z_depth = 0 # Not used yet.
 alpha_deg = 45
 beta_deg = 45
 gamma_deg = 45
+
+# Key values
+key_values = [5, 5]
+
+# Visualisers
+block_visualiser = "BLOCK"
+surrounding_visualiser = "SURRO"
 
 # Create a base matrix to store the blocks and their locations
 base_matrix = [["--x--" for x in range(number_of_x_rows)] for y in range(number_of_y_columns)]
@@ -102,26 +115,35 @@ def place_block_in_matrix(block):
     beta = angles[1]
     gamma = angles[2]
 
-    base_matrix[x][y] = "BLOCK"
+    base_matrix[x][y] = block_visualiser
 
+def get_angle_between_two_points_in_matrix(x1, y1, x2, y2):
+    # NOTE: Always returns the angle is positive degrees, it is meant to be this way.
+    delta_x = abs(x2 - x1)
+    delta_y = abs(y1 - y2)
+    angle = math.degrees(math.atan2(delta_y, delta_x))
+    if angle < 0:
+        angle += 360
+    return angle
 
 def main():
     # Create a dummy location block
-    dummy_location = location_block(5, 0, 0, 45, 45, 45)
-    dummy_location_second = location_block(5, 5, 0, 45, 45, 45)
+    dummy_location = location_block(key_values[0], key_values[1], 0, 45, 45, 45) # key_values[0] = x, key_values[1] = y
+    target_block = location_block(number_of_x_rows-1, number_of_y_columns-1, 0, 45, 45, 45)
 
     # Add the blocks to the list of all blocks
     all_blocks.append(dummy_location)
-    all_blocks.append(dummy_location_second)
-    
+    all_blocks.append(target_block)
+
     for block in all_blocks:
-        # Visualises the blocks in the matrix
+        # Visualizes the blocks in the matrix
         place_block_in_matrix(block)
 
-    # Visualises the surrounding cells of the block
-    change_surrounding_cells_of(dummy_location_second.x, dummy_location_second.y, "SURRO")
+    # Visualizes the surrounding cells of the block
+    change_surrounding_cells_of(dummy_location.x, dummy_location.y, surrounding_visualiser)
 
     print_matrix()
+    print(get_angle_between_two_points_in_matrix(dummy_location.x, dummy_location.y, target_block.x, target_block.y))
 
 if __name__ == "__main__":
     main()
